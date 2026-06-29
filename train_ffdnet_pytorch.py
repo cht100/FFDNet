@@ -115,11 +115,12 @@ def np_rot90(img, k):
     return np.ascontiguousarray(np.rot90(img, k))
 
 
-def save_checkpoint(path, model, optimizer, epoch, step):
+def save_checkpoint(path, model, optimizer, epoch, step, channels):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     torch.save({
         "epoch": epoch,
         "step": step,
+        "channels": channels,
         "model": model.state_dict(),
         "optimizer": optimizer.state_dict(),
     }, path)
@@ -200,9 +201,9 @@ def main():
 
         avg_loss = epoch_loss / max(1, len(loader))
         print(f"epoch {epoch + 1:04d} average loss {avg_loss:.6f}")
-        save_checkpoint(os.path.join(args.save_dir, "latest.pt"), model, optimizer, epoch + 1, global_step)
+        save_checkpoint(os.path.join(args.save_dir, "latest.pt"), model, optimizer, epoch + 1, global_step, args.channels)
         if (epoch + 1) % 10 == 0:
-            save_checkpoint(os.path.join(args.save_dir, f"epoch_{epoch + 1:04d}.pt"), model, optimizer, epoch + 1, global_step)
+            save_checkpoint(os.path.join(args.save_dir, f"epoch_{epoch + 1:04d}.pt"), model, optimizer, epoch + 1, global_step, args.channels)
 
 
 if __name__ == "__main__":
